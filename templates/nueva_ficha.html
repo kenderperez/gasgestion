@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{% if ficha %}Editar{% else %}Agregar{% endif %} Ficha</h2>
+<form method="POST">
+    <label>Fecha:</label>
+    <input type="date" name="fecha" value="{{ ficha.fecha if ficha else '' }}" required><br>
+
+    <label>Estación:</label>
+    <input type="text" name="estacion" value="{{ ficha.estacion if ficha else '' }}" required><br>
+
+    <label>Combustible:</label>
+    <input type="text" name="tipo_combustible" value="{{ ficha.tipo_combustible if ficha else '' }}" required><br>
+
+    <label>Beneficiario:</label>
+    <select name="beneficiario_id" required>
+        {% for b in beneficiarios %}
+        <option value="{{ b.id }}" {% if ficha and ficha.beneficiario_id==b.id %}selected{% endif %}>{{ b.nombre }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label>Vehículo:</label>
+    <select name="vehiculo_id" required>
+        {% for v in vehiculos %}
+        <option value="{{ v.id }}" {% if ficha and ficha.vehiculo_id==v.id %}selected{% endif %}>{{ v.placa }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label>Litros:</label>
+    <input type="number" step="0.01" name="litros" value="{{ ficha.litros if ficha else '' }}" required><br>
+
+    <label>Autoriza:</label>
+    <input type="text" name="autoriza" value="{{ ficha.autoriza if ficha else '' }}" required><br>
+
+    <button type="submit">{% if ficha %}Actualizar{% else %}Agregar{% endif %}</button>
+</form>
+{% endblock %}

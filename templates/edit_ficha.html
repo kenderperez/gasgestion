@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Ficha de Combustible{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    <h1 class="mb-4 text-center" style="color: #34495e; font-weight: 600;">Editar Ficha de Combustible</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow" style="border-radius: 8px; border: 1px solid #ced4da;"> {# Sombra más suave y borde #}
+        <div class="card-header text-white" style="background-color: #364f6b; border-top-left-radius: 8px; border-top-right-radius: 8px; font-size: 1.2rem; font-weight: bold;">
+            <i class="fas fa-file-alt me-2"></i> Detalles de la Ficha ID: {{ ficha.id }}
+        </div>
+        <div class="card-body p-4" style="background-color: #f0f2f5;"> {# Fondo gris muy claro #}
+            <form method="POST" class="row g-3">
+                
+                <div class="col-md-6">
+                    <label for="fecha" class="form-label" style="font-weight: 500; color: #555;">Fecha:</label>
+                    <input type="date" name="fecha" id="fecha" class="form-control" value="{{ ficha.fecha }}" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                </div>
+                <div class="col-md-6">
+                    <label for="estacion" class="form-label" style="font-weight: 500; color: #555;">Estación:</label>
+                    <input type="text" name="estacion" id="estacion" class="form-control" value="{{ ficha.estacion }}" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                </div>
+
+                <div class="col-12 mt-3">
+                    <label for="tipo_combustible" class="form-label" style="font-weight: 500; color: #555;">Tipo de Combustible:</label>
+                    <input type="text" name="tipo_combustible" id="tipo_combustible" class="form-control" value="{{ ficha.tipo_combustible }}" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="beneficiario_id" class="form-label" style="font-weight: 500; color: #555;">Beneficiario:</label>
+                    <select name="beneficiario_id" id="beneficiario_id" class="form-control" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                        {% for b in beneficiarios %}
+                            <option value="{{ b.id }}" {% if b.id == ficha.beneficiario_id %}selected{% endif %}>{{ b.nombre }} (C.I.: {{ b.cedula }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="vehiculo_id" class="form-label" style="font-weight: 500; color: #555;">Vehículo:</label>
+                    <select name="vehiculo_id" id="vehiculo_id" class="form-control" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                        {% for v in vehiculos %}
+                            <option value="{{ v.id }}" {% if v.id == ficha.vehiculo_id %}selected{% endif %}>{{ v.tipo }} - {{ v.marca_modelo }} (Placa: {{ v.placa }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="litros" class="form-label" style="font-weight: 500; color: #555;">Litros:</label>
+                    <input type="number" step="0.01" name="litros" id="litros" class="form-control" value="{{ ficha.litros }}" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                </div>
+                <div class="col-md-6 mt-3">
+                    <label for="autoriza" class="form-label" style="font-weight: 500; color: #555;">Autoriza:</label>
+                    <input type="text" name="autoriza" id="autoriza" class="form-control" value="{{ ficha.autoriza }}" required style="border-radius: 5px; border: 1px solid #ced4da;">
+                </div>
+                
+                <div class="col-12 d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg me-md-2" style="background-color: #4a69bd; border-color: #4a69bd; border-radius: 20px; padding: 8px 25px; font-weight: bold; font-size: 1rem; transition: background-color 0.3s ease;">
+                        <i class="fas fa-save me-2"></i> Guardar Cambios
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg" style="background-color: #6c757d; border-color: #6c757d; border-radius: 20px; padding: 8px 25px; font-weight: bold; font-size: 1rem; transition: background-color 0.3s ease;">
+                        <i class="fas fa-times-circle me-2"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

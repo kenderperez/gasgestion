@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Buscar Fichas por Placa</h2>
+
+<form method="POST" action="{{ url_for('buscar_por_placa') }}" class="search-form">
+  <label for="placa_input">Placa del Vehículo:</label>
+  <input type="text" id="placa_input" name="placa" value="{{ busqueda }}" placeholder="Ej. ABC-123" required>
+  <button type="submit" class="button search-button">Buscar</button>
+</form>
+
+{% if resultados %}
+<table class="tabla-fichas"> {# Aplicando la clase para los estilos #}
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Fecha</th>
+      <th>Vehículo</th>
+      <th>Beneficiario</th>
+      <th>Litros</th>
+      <th>Autorizado por</th>
+      <th>Estado</th> {# Nueva columna para el estado #}
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for f in resultados %}
+  <tr>
+    <td>{{ f.id }}</td>
+    <td>{{ f.fecha.strftime('%d/%m/%Y %H:%M') if f.fecha else '' }}</td> {# Formato de fecha y hora #}
+    <td>
+      {{ f.tipo_vehiculo }} - {{ f.marca_modelo }}<br>
+      Color: {{ f.color }}<br>
+      Placa: {{ f.placa }}
+    </td>
+    <td>
+      {{ f.nombre_beneficiario }}<br>
+      {{ f.tipo_beneficiario }}<br>
+      C.I: {{ f.cedula }}<br>
+      Tel: {{ f.telefono }}
+    </td>
+    <td>{{ f.litros }}</td>
+    <td>{{ f.autoriza }}</td>
+    <td> {# Celda para el estado #}
+      {% if f.activo %}
+        <span class="badge por-atender">Por Atender</span>
+      {% else %}
+        <span class="badge atendido">Atendido</span>
+      {% endif %}
+    </td>
+    <td>
+      <a href="{{ url_for('edit_ficha', id=f.id) }}" title="Editar Ficha">✏️</a>
+      <form action="{{ url_for('delete_ficha', id=f.id) }}" method="POST" style="display:inline;">
+        <button type="submit" title="Eliminar Ficha">🗑️</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  {% if busqueda %} {# Solo mostrar si ya se intentó una búsqueda y no hubo resultados #}
+    <p>No se encontraron fichas para la placa "{{ busqueda }}".</p>
+  {% else %} {# Mensaje inicial antes de la primera búsqueda #}
+    <p>Introduce una placa para buscar fichas.</p>
+  {% endif %}
+{% endif %}
+
+{# Bloque de estilos CSS (es mejor moverlo a un archivo .css externo) #}
+<style>
+  /* Estilos para el formulario de búsqueda */
+  .search-form {
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex; /* Para alinear elementos del formulario */
+    align-items: center;
+    gap: 10px; /* Espacio entre elementos */
+  }
+  .search-form label {
+    font-weight: bold;
+    color: #343a40;
+  }
+  .search-form input[type="text"] {
+    flex-grow: 1; /* Permite que el input ocupe el espacio disponible */
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1em;
+    max-width: 250px; /* Limita el ancho máximo del input */
+  }
+  .search-form .button.search-button {
+    background-color: #007bff; /* Azul para el botón de búsqueda */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95em;
+  }
+  .search-form .button.search-button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Estilos para los badges de estado */
+  .badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    display: inline-block;
+  }
+  .por-atender {
+    background-color: #ffc107; /* Amarillo */
+  }
+  .atendido {
+    background-color: #28a745; /* Verde */
+  }
+
+  /* Estilos para la tabla */
+  .tabla-fichas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .tabla-fichas th, .tabla-fichas td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: top;
+  }
+  .tabla-fichas thead th {
+    background-color: #e9ecef;
+    font-weight: bold;
+    color: #343a40;
+    text-transform: uppercase;
+    font-size: 0.9em;
+  }
+  .tabla-fichas tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  .tabla-fichas tbody tr:hover {
+    background-color: #e2e6ea;
+  }
+  .tabla-fichas td:last-child {
+    text-align: center;
+    white-space: nowrap;
+  }
+  .tabla-fichas td:last-child a, .tabla-fichas td:last-child button {
+    margin: 0 5px;
+  }
+  .tabla-fichas button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 0;
+  }
+  .tabla-fichas button:hover {
+    color: #007bff;
+  }
+</style>
+
+{% endblock %}

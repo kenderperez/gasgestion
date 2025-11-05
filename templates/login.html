@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="
+    background-color: #f0f2f5; /* Fondo suave */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Para que ocupe gran parte de la altura de la vista */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
+    <div style="
+        background-color: #ffffff; /* Fondo blanco para el formulario */
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        width: 100%;
+        max-width: 400px; /* Ancho máximo para el formulario */
+        text-align: center;
+    ">
+        <h2 style="
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        ">Iniciar Sesión</h2>
+        <form method='POST' style="text-align: left;">
+            <div style="margin-bottom: 20px;">
+                <label for="username" style="
+                    display: block;
+                    margin-bottom: 8px;
+                    color: #555;
+                    font-size: 16px;
+                    font-weight: 500;
+                ">Usuario:</label>
+                <input
+                    type="text"
+                    id="username"
+                    name='username'
+                    required
+                    style="
+                        width: calc(100% - 20px); /* Ancho completo menos padding */
+                        padding: 12px 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                        font-size: 16px;
+                        color: #333;
+                        box-sizing: border-box; /* Incluye padding y border en el width */
+                    "
+                >
+            </div>
+            <div style="margin-bottom: 30px;">
+                <label for="password" style="
+                    display: block;
+                    margin-bottom: 8px;
+                    color: #555;
+                    font-size: 16px;
+                    font-weight: 500;
+                ">Contraseña:</label>
+                <input
+                    type='password'
+                    id="password"
+                    name='password'
+                    required
+                    style="
+                        width: calc(100% - 20px);
+                        padding: 12px 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                        font-size: 16px;
+                        color: #333;
+                        box-sizing: border-box;
+                    "
+                >
+            </div>
+            <button
+                type='submit'
+                style="
+                    width: 100%;
+                    padding: 15px;
+                    background-color: #007bff; /* Un azul primario */
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 18px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                "
+                onmouseover="this.style.backgroundColor='#0056b3'"
+                onmouseout="this.style.backgroundColor='#007bff'"
+            >
+                Entrar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

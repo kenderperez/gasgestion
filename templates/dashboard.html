@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard de Combustible</h2>
+<div class="summary-section">
+    <p>Total Fichas: **{{ resumen.total_fichas }}**</p>
+    <p>Total Litros: **{{ resumen.total_litros }}**</p>
+</div>
+<hr>
+<h3>Litros por Tipo de Vehículo</h3>
+<div style="width: 95%; margin: auto;">
+    <canvas id="litrosChart"></canvas>
+</div>
+<hr>
+<h3>Estado de las Fichas</h3>
+<div style="width: 95%; margin: auto;">
+    <canvas id="fichasChart"></canvas>
+</div>
+<hr>
+<h3>Tipos de Combustible Utilizados</h3>
+<div style="width: 95%; margin: auto;">
+    <canvas id="combustiblePieChart"></canvas>
+</div>
+<hr>
+<h3>Distribución por Estaciones</h3>
+<div style="width: 95%; margin: auto;">
+    <canvas id="estacionesPieChart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Gráfico de Litros por Vehículo ---
+        const labelsLitros = {{ litros_por_vehiculo | map(attribute='vehiculo') | list | tojson }};
+        const dataLitros = {{ litros_por_vehiculo | map(attribute='total_litros') | list | tojson }};
+
+        const ctxLitros = document.getElementById('litrosChart').getContext('2d');
+        new Chart(ctxLitros, {
+            type: 'bar',
+            data: {
+                labels: labelsLitros,
+                datasets: [{
+                    label: 'Litros por Vehículo',
+                    data: dataLitros,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Litros'
+                        },
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tipo de Vehículo'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Consumo de Litros por Tipo de Vehículo'
+                    }
+                }
+            }
+        });
+
+        // --- Gráfico de Estado de las Fichas (Barra) ---
+        const ctxFichas = document.getElementById('fichasChart').getContext('2d');
+        new Chart(ctxFichas, {
+            type: 'bar',
+            data: {
+                labels: ['Fichas Atendidas', 'Fichas Por Atender'],
+                datasets: [{
+                    label: 'Cantidad de Fichas',
+                    data: [
+                        {{ datos_grafico_fichas.fichas_atendidas }},
+                        {{ datos_grafico_fichas.fichas_por_atender }}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Fichas'
+                        },
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Estado de la Ficha'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Fichas Atendidas vs. Por Atender'
+                    }
+                }
+            }
+        });
+
+        // --- Gráfico de Pie para Tipos de Combustible ---
+        const labelsCombustible = {{ tipos_combustible | map(attribute='tipo_combustible') | list | tojson }};
+        const dataCombustible = {{ tipos_combustible | map(attribute='conteo') | list | tojson }};
+
+        const ctxCombustible = document.getElementById('combustiblePieChart').getContext('2d');
+        new Chart(ctxCombustible, {
+            type: 'pie',
+            data: {
+                labels: labelsCombustible,
+                datasets: [{
+                    label: 'Tipos de Combustible',
+                    data: dataCombustible,
+                    backgroundColor: [
+                        'rgba(255, 206, 86, 0.7)', // Amarillo
+                        'rgba(153, 102, 255, 0.7)', // Morado
+                        'rgba(255, 159, 64, 0.7)', // Naranja
+                        'rgba(75, 192, 192, 0.7)', // Verde azulado
+                        'rgba(54, 162, 235, 0.7)'  // Azul
+                    ],
+                    borderColor: [
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Distribución de Fichas por Tipo de Combustible'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + ' fichas';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Gráfico de Pie para Estaciones ---
+        const labelsEstaciones = {{ estaciones | map(attribute='nombre_estacion') | list | tojson }};
+        const dataEstaciones = {{ estaciones | map(attribute='conteo') | list | tojson }};
+
+        const ctxEstaciones = document.getElementById('estacionesPieChart').getContext('2d');
+        new Chart(ctxEstaciones, {
+            type: 'pie',
+            data: {
+                labels: labelsEstaciones,
+                datasets: [{
+                    label: 'Distribución por Estación',
+                    data: dataEstaciones,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',   // Rojo
+                        'rgba(54, 162, 235, 0.7)',   // Azul
+                        'rgba(255, 206, 86, 0.7)',   // Amarillo
+                        'rgba(75, 192, 192, 0.7)',   // Verde azulado
+                        'rgba(153, 102, 255, 0.7)',  // Morado
+                        'rgba(255, 159, 64, 0.7)'    // Naranja
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Distribución de Fichas por Estación'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + ' fichas';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

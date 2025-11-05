@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Fichas de Combustible{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-center" style="color: #34495e; font-weight: 600;">Listado de Fichas de Combustible</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ url_for('add_ficha') }}" class="btn btn-primary btn-lg" style="background-color: #4a69bd; border-color: #4a69bd; border-radius: 20px; padding: 8px 25px; font-weight: bold; font-size: 1rem; transition: background-color 0.3s ease;">
+            <i class="fas fa-plus-circle me-2"></i> Nueva Ficha
+        </a>
+    </div>
+
+    {% if fichas %}
+    <div class="table-responsive" style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <table class="table table-hover table-striped mb-0"> {# Clases de Bootstrap para tablas #}
+            <thead style="background-color: #e9ecef;">
+                <tr>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">ID</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">Fecha</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">Vehículo</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">Beneficiario</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">Litros</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">Autorizado por</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px;">Estado</th>
+                    <th scope="col" style="color: #343a40; font-weight: bold; text-transform: uppercase; font-size: 0.9em; padding: 12px 15px; text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for f in fichas %}
+            <tr>
+                <td style="padding: 12px 15px; vertical-align: middle;">{{ f.id }}</td>
+                <td style="padding: 12px 15px; vertical-align: middle;">{{ f.fecha.strftime('%d/%m/%Y %H:%M') if f.fecha else '' }}</td>
+                <td style="padding: 12px 15px; vertical-align: middle;">
+                    <strong style="color: #34495e;">{{ f.tipo_vehiculo }}</strong> - {{ f.marca_modelo }}<br>
+                    <small class="text-muted">Color: {{ f.color }}</small><br>
+                    <span class="badge bg-secondary" style="background-color: #6c757d !important;">Placa: {{ f.placa }}</span>
+                </td>
+                <td style="padding: 12px 15px; vertical-align: middle;">
+                    <strong style="color: #34495e;">{{ f.nombre_beneficiario }}</strong><br>
+                    <small class="text-muted">{{ f.tipo_beneficiario }}</small><br>
+                    C.I: <span class="badge bg-info" style="background-color: #17a2b8 !important;">{{ f.cedula }}</span><br>
+                    Tel: <small class="text-muted">{{ f.telefono }}</small>
+                </td>
+                <td style="padding: 12px 15px; vertical-align: middle; font-weight: bold; color: #4a69bd;">{{ f.litros }} L</td>
+                <td style="padding: 12px 15px; vertical-align: middle;">{{ f.autoriza }}</td>
+                <td style="padding: 12px 15px; vertical-align: middle;">
+                    {% if f.activo %}
+                        <span class="badge" style="background-color: #dc3545 !important; color: white; padding: 5px 10px; border-radius: 5px;">PENDIENTE</span>
+                    {% else %}
+                        <span class="badge" style="background-color: #28a745 !important; color: white; padding: 5px 10px; border-radius: 5px;">ATENDIDA</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">
+                    <a href="{{ url_for('edit_ficha', id=f.id) }}" class="btn btn-sm btn-outline-primary" title="Editar Ficha" style="border-radius: 5px; margin-right: 5px; color: #4a69bd; border-color: #4a69bd;">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{{ url_for('delete_ficha', id=f.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta ficha?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Ficha" style="border-radius: 5px; color: #dc3545; border-color: #dc3545;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-4 text-center" style="border-radius: 8px;">
+        <i class="fas fa-info-circle me-2"></i> No hay fichas de combustible registradas en el sistema.
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

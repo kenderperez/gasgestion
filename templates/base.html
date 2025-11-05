@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}COMBUSTIBLE ⛽{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .navbar-brand { font-weight: bold; }
+        /* Pequeño margen para los iconos dentro del nav-link */
+        .nav-link i {
+            margin-right: 8px; /* Espacio a la derecha del icono */
+        }
+        /* Ajuste para el icono del brand si no quieres margen */
+        .navbar-brand i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}"><i class="fas fa-gas-pump"></i> Control Combustible</a> {# Icono de bomba de gasolina #}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}"><i class="fas fa-home"></i> Inicio</a> {# Icono de casa #}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('add_ficha') }}"><i class="fas fa-plus-circle"></i> Agregar Ficha</a> {# Icono de agregar #}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('buscar_por_placa') }}"><i class="fas fa-search"></i> Buscar por Placa</a> {# Icono de búsqueda #}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('buscar_cedula') }}"><i class="fas fa-id-card"></i> Buscar por Cédula</a> {# Icono de tarjeta de identificación #}
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href='{{ url_for("buscar_por_ficha_id") }}'><i class="fas fa-qrcode"></i> Buscar Ficha ID</a> {# Icono de código QR (o un ID de tarjeta)#}
+                </li>
+                  
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}"><i class="fas fa-chart-line"></i> Dashboard</a> {# Icono de gráfico de línea #}
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if session['loggedin'] %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Bienvenido, {{ session['username'] }}</a> {# Icono de usuario #}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a> {# Icono de cerrar sesión #}
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a> {# Icono de iniciar sesión #}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

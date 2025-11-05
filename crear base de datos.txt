@@ -1,0 +1,32 @@
+-- Tabla de fichas
+CREATE TABLE IF NOT EXISTS fichas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    estacion VARCHAR(100) NOT NULL,
+    tipo_combustible VARCHAR(50) NOT NULL,
+    autoriza VARCHAR(100)
+);
+
+-- Tabla de beneficiarios
+CREATE TABLE IF NOT EXISTS beneficiarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ficha_id INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    tipo VARCHAR(100),
+    cedula VARCHAR(20),
+    telefono VARCHAR(20),
+    FOREIGN KEY (ficha_id) REFERENCES fichas(id) ON DELETE CASCADE
+);
+
+-- Tabla de vehículos
+CREATE TABLE IF NOT EXISTS vehiculos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ficha_id INT NOT NULL,
+    tipo VARCHAR(50),
+    marca_modelo VARCHAR(100),
+    color VARCHAR(50),
+    placa VARCHAR(20),
+    litros DECIMAL(10,2),
+    foto VARCHAR(255),
+    FOREIGN KEY (ficha_id) REFERENCES fichas(id) ON DELETE CASCADE
+);

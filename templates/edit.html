@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar registro</h2>
+<form method='POST'>
+  Vehículo: <input name='vehiculo' value='{{ registro.vehiculo }}'><br>
+  Conductor: <input name='conductor' value='{{ registro.conductor }}'><br>
+  Litros: <input name='litros' type='number' step='0.01' value='{{ registro.litros }}'><br>
+  Precio: <input name='precio' type='number' step='0.01' value='{{ registro.precio }}'><br>
+  Fecha: <input name='fecha' type='date' value='{{ registro.fecha }}'><br>
+  Autoriza: <input name='autoriza' value='{{ registro.autoriza }}'><br>
+  <button type='submit'>Actualizar</button>
+</form>
+{% endblock %}
